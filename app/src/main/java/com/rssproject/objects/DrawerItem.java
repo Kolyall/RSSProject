@@ -18,16 +18,18 @@ public class DrawerItem implements Parcelable {
 	public String getItemName() {
 		return ItemName;
 	}
-	public void setItemName(String itemName) {
-		ItemName = itemName;
-	}
 	public int getImgResID() {
 		return imgResID;
 	}
-	public void setImgResID(int imgResID) {
-		this.imgResID = imgResID;
-	}
-	
+
+    @Override
+    public boolean equals(Object o) {
+        DrawerItem another = (DrawerItem)o;
+        if (another.getItemName().equals(getItemName()))
+            return true;
+        else
+            return false;
+    }
 
     @Override
     public int describeContents() {
@@ -36,10 +38,6 @@ public class DrawerItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-//        dest.writeString(ItemName);
-//        dest.writeString(ItemCount);
-//        dest.writeString(ItemBasename);
-//        dest.writeInt(imgResID);
         Bundle b = new Bundle();
         b.putString("ItemName", ItemName);
         b.putInt("imgResID", imgResID);
@@ -49,17 +47,12 @@ public class DrawerItem implements Parcelable {
     public static final Creator<DrawerItem> CREATOR =
             new Creator<DrawerItem>() {
                 public DrawerItem createFromParcel(Parcel in) {
-
-//                    category.ItemName = in.readString();
                     Bundle b = in.readBundle();
                     String ItemName = b.getString("ItemName");
-                    String ItemCount = b.getString("ItemCount");
-                    String ItemBasename = b.getString("ItemBasename");
                     int imgResID = b.getInt("imgResID");
                     DrawerItem item = new DrawerItem(ItemName,imgResID);
                     return item;
                 }
-
                 @Override
                 public DrawerItem[] newArray(int size) {
                     return new DrawerItem[size];

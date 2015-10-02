@@ -5,16 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.rssproject.database.DatabaseHelper;
+import com.rssproject.objects.DrawerItem;
 import com.rssproject.objects.Enclosure;
 import com.rssproject.objects.Item;
 import com.rssproject.service.InternetIntentService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SplashActivity extends SherlockActivity {
@@ -27,8 +31,10 @@ public class SplashActivity extends SherlockActivity {
                 Log.e("onReceive", "success=" + success);
 
                 if (success) {
-                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                    finish();
+                    MyRun mr = new MyRun(getApplicationContext());
+                    new Thread(mr).start();
+//                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+//                    finish();
 //                    Bundle b = intent.getBundleExtra("bundle");
 //                    Channel channel = b.getParcelable("channel");
 //                    Log.e(LOG_TAG,channel.getTitle());
@@ -42,6 +48,48 @@ public class SplashActivity extends SherlockActivity {
         }
     };
     TextView tv;
+    private Handler handler;
+
+    class MyRun implements Runnable {
+        Context applicationContext;
+        public MyRun(Context applicationContext) {
+            this.applicationContext = applicationContext;
+        }
+        public void run() {
+            List<Item>  list = getListFromDB(applicationContext);
+            addToUIListFrom(list);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    intent.putParcelableArrayListExtra("dataList",dataList);
+                    Log.e(LOG_TAG, " dataList.size : " + dataList.size());
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
+    }
+
+    private List<Item> getListFromDB(Context applicationContext) {
+        RuntimeExceptionDao<Item, Integer> simpleDao = (new DatabaseHelper(applicationContext))
+                .getItemDataDao();
+                return simpleDao.queryForAll();
+    }
+
+    ArrayList<DrawerItem> dataList = new ArrayList<DrawerItem>();
+    private void addToUIListFrom(List<Item> items) {
+        DrawerItem allNews = new DrawerItem("Все новости",R.drawable.icon_left_point);
+        if (!dataList.contains(allNews))
+        dataList.add(allNews);
+        for (Item item:items){
+            DrawerItem drawerItem = new DrawerItem(item.getCategory(),R.drawable.icon_left_point);
+            if (!dataList.contains(drawerItem))
+                 dataList.add(drawerItem);
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +102,7 @@ public class SplashActivity extends SherlockActivity {
         loadListFromRSS();
          tv = new TextView(this);
 
+        handler = new Handler(getBaseContext().getMainLooper());
     }
 
     private final String LOG_TAG = getClass().getSimpleName();

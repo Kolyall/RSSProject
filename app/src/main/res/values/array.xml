@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string-array name="listlinks">
+        <item >http://ria.ru/export/rss2/politics/index.xml</item>
+        <item >http://ria.ru/export/rss2/world/index.xml</item>
+        <item >http://ria.ru/export/rss2/economy/index.xml</item>
+        <item >http://ria.ru/export/rss2/society/index.xml</item>
+        <item >http://ria.ru/export/rss2/education/index.xml</item>
+        <item >http://ria.ru/export/rss2/moscow/index.xml</item>
+        <item >http://sport.ria.ru/export/rss2/sport/index.xml</item>
+        <item >http://ria.ru/export/rss2/incidents/index.xml</item>
+        <item >http://ria.ru/export/rss2/defense_safety/index.xml</item>
+        <item >http://ria.ru/export/rss2/science/index.xml</item>
+        <item >http://eco.ria.ru/export/rss2/eco/index.xml</item>
+        <item >http://ria.ru/export/rss2/announce/index.xml</item>
+        <item >http://ria.ru/export/rss2/spravka/index.xml</item>
+        <item >http://ria.ru/export/rss2/photolents/index.xml</item>
+        <item >http://ria.ru/export/rss2/infografika/index.xml</item>
+    </string-array>
+</resources>

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.rssproject.R;
 import com.rssproject.objects.Channel;
 import com.rssproject.objects.Enclosure;
 import com.rssproject.objects.Item;
@@ -24,17 +25,19 @@ import java.util.List;
 
 public class XMLManager {
     private final String LOG_TAG = getClass().getSimpleName();
-    String url = "http://ria.ru/export/rss2/politics/index.xml";
 	private Context mContext;
 	public XMLManager(Context context) {
 		this.mContext = context;
 	}
 
     public boolean loadList() throws URISyntaxException, IOException {
-        String str_xml = getXmlFromUrl(url);
-        Channel root = convertXML(str_xml);
+        String[] listlinks = mContext.getResources().getStringArray(R.array.listlinks);
+        for (String url:listlinks) {
+            String str_xml = getXmlFromUrl(url);
+            Channel root = convertXML(str_xml);
 //        deleteDBItems();
-        addToOrmLite(root);
+            addToOrmLite(root);
+        }
         boolean success = true;
 		return success;
 	}

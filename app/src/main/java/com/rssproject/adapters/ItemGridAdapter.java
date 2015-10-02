@@ -93,8 +93,6 @@ public class ItemGridAdapter extends BaseAdapter {
         Item item = data.get(position);
         String item_title = item.getTitle();
         String item_date = item.getPubdate();
-        // "   Fri, 02 Oct 2015 10:01:00 +0300"
-        //      Fri,02Oct201518:07:00+0300
         SimpleDateFormat curFormater = new SimpleDateFormat("EEE,ddMMMyyyyHH:mm:ssZ", Locale.ENGLISH);
 
         Date dateObj = null;
@@ -150,21 +148,6 @@ public class ItemGridAdapter extends BaseAdapter {
                         }
 					});
 
-//		Picasso.with(mContext).load(imageObject.preview)
-//				.into(viewHolder.thumb_image, new com.squareup.picasso.Callback() {
-//					@Override
-//					public void onSuccess() {
-//						viewHolder.thumb_image.setVisibility(View.VISIBLE);
-//						viewHolder.progressBar1.setVisibility(View.GONE);
-//						viewHolder.thumb_image.invalidate();
-////						viewHolder.likes_RelativeLayout.setVisibility(View.VISIBLE);
-//					}
-//
-//					@Override
-//					public void onError() {
-//
-//					}
-//				});
         return convertView;
     }
     

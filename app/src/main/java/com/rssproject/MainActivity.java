@@ -47,10 +47,10 @@ public class MainActivity  extends SherlockFragmentActivity  {
 //        else
         if (item.getItemId() == android.R.id.home) {
             mDrawerToggle.setDrawerIndicatorEnabled(true);
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
-                mDrawerLayout.closeDrawer(GravityCompat.START);
+            if (mDrawerLayout.isDrawerOpen(mDrawer))
+                mDrawerLayout.closeDrawer(mDrawer);
             else
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(mDrawer);
             return true;
         }
         return true;
@@ -63,28 +63,7 @@ public class MainActivity  extends SherlockFragmentActivity  {
         actionBar = getSupportActionBar();
         actionBar.setIcon(android.R.color.transparent);
 
-        dataList = new ArrayList<DrawerItem>();
-        dataList.add(
-                new DrawerItem(
-                        "Все новости",
-                         R.drawable.icon_left_point));
-        dataList.add(
-                new DrawerItem(
-                        "Политика",
-                        R.drawable.icon_left_point));
-        dataList.add(
-                new DrawerItem(
-                        "Экономика",
-                        R.drawable.icon_left_point));
-        dataList.add(
-                new DrawerItem(
-                        "В мире",
-                        R.drawable.icon_left_point));
-        dataList.add(
-                new DrawerItem(
-                        "Иркутская область",
-                        R.drawable.icon_left_point));
-
+        dataList = getIntent().getParcelableArrayListExtra("dataList");
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -170,50 +149,13 @@ public class MainActivity  extends SherlockFragmentActivity  {
         getSupportFragmentManager().putFragment(outState, FRAGMENT_TAG, fragment );
     }
 
-
-    private void SelectItem(String search) {
-//        actionBar.show();
-        //        getActionBar().show();
-        //        invalidateOptionsMenu();
-        if (!isNetworkConnected()) {
-            Toast.makeText(getApplicationContext(),"No internet",Toast.LENGTH_LONG).show();
-        }
-        else {
-            //                item_position = 1;
-            monItemClick.onClickPosition(item_position);
-
-
-            mDrawerList.setItemChecked(item_position, true);
-
-            setTitle("РџРѕРёСЃРє: " + search);
-            //	mDrawerLayout.closeDrawer(mDrawerList);
-            mDrawerLayout.closeDrawer(mDrawer);
-            fragment.selectItem(item_position);
-            //	mSFragmentPagerAdapter.notifyDataSetChanged();
-
-
-        }
-    }
-
-
-
     public void SelectItem(int possition) {
-
         monItemClick.onClickPosition(possition);
         item_position = possition;
-
         mDrawerList.setItemChecked(possition, true);
-
         setTitle(dataList.get(possition).getItemName());
-//        	mDrawerLayout.closeDrawer(mDrawerList);
         mDrawerLayout.closeDrawer(mDrawer);
-
-        fragment.selectItem(item_position);
-
-        //	mSFragmentPagerAdapter.notifyDataSetChanged();
-
-
-        //        }
+        fragment.selectItem(dataList.get(item_position));
     }
 
 
@@ -255,13 +197,6 @@ public class MainActivity  extends SherlockFragmentActivity  {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //            if (position == dataList.size()-1){
-            //                setItemSelected(item_position);
-            //                setTitle(dataList.get(item_position).getItemName());
-            //                startActivity(new Intent(getApplicationContext(),AboutActivity.class));
-            //                return;
-            //            }
-
             if (!isNetworkConnected()) {
                 setItemSelected(item_position);
                 setTitle(dataList.get(item_position).getItemName());

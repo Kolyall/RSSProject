@@ -23,6 +23,7 @@ import com.rssproject.R;
 import com.rssproject.activities.InfoActivity;
 import com.rssproject.adapters.ItemGridAdapter;
 import com.rssproject.database.DatabaseHelper;
+import com.rssproject.objects.DrawerItem;
 import com.rssproject.objects.Item;
 import com.rssproject.service.InternetIntentService;
 
@@ -97,33 +98,22 @@ public class NewsGridFragment extends Fragment{
 
 
         handler = new Handler(getActivity().getBaseContext().getMainLooper());
-        selectItem(0);
+        selectItem(null);
 
     }
 
     Handler handler ;
 
     class MyRun implements Runnable {
-        int startId;
+        DrawerItem startId;
         Context applicationContext;
-        public MyRun(Context applicationContext, int startId) {
+        public MyRun(Context applicationContext, DrawerItem startId) {
             this.startId = startId;
             this.applicationContext = applicationContext;
-
         }
         public void run() {
-
             List<Item>  list = getListFromDB(applicationContext,startId);
-
-
             addToUIListFrom(list);
-
-
-//            Bundle bundle = new Bundle();
-//            Message message=new Message();
-//            message.setData(bundle);
-//            handler.handleMessage(message);
-
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -131,45 +121,24 @@ public class NewsGridFragment extends Fragment{
                     adapter.notifyDataSetChanged();
                 }
             });
-
         }
-
-
     }
 
 
 
-    public void selectItem(int item_position) {
-        int startId=item_position;
+    public void selectItem(DrawerItem item_position) {
+        DrawerItem startId=item_position;
         MyRun mr = new MyRun(getActivity().getApplicationContext(),startId);
         new Thread(mr).start();
     }
 
-    private List<Item> getListFromDB(Context applicationContext, int startId) {
+    private List<Item> getListFromDB(Context applicationContext, DrawerItem startId) {
         RuntimeExceptionDao<Item, Integer> simpleDao = (new DatabaseHelper(applicationContext))
                 .getItemDataDao();
-        switch (startId){
-            case 0:{
-                return simpleDao.queryForAll();
-            }
-            case 1:{
-                return simpleDao.queryForEq("category", "Политика");
-            }
-            case 2:{
-                return simpleDao.queryForEq("category", "Экономика");
-            }
-            case 3:{
-                return simpleDao.queryForEq("category", "В мире");
-            }
-            case 4:{
-                return simpleDao.queryForEq("category", "Иркутская область");
-            }
-            default:{
-                return simpleDao.queryForAll();
-            }
-        }
-
-//        return simpleDao.queryForAll();
+        if (startId==null||startId.getItemName().equals("Все новости"))
+            return simpleDao.queryForAll();
+        else
+            return simpleDao.queryForEq("category", startId.getItemName());
 
     }
 
