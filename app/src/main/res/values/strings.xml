@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="drawer_open">Opened</string>
+    <string name="drawer_close">Close</string>
+    <string name="exit">Click again to Exit</string>
 </resources>

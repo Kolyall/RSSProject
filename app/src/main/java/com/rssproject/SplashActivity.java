@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -17,6 +16,7 @@ import com.rssproject.service.InternetIntentService;
 import java.util.List;
 
 public class SplashActivity extends SherlockActivity {
+
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -25,13 +25,16 @@ public class SplashActivity extends SherlockActivity {
                 Log.e("onReceive", "success=" + success);
 
                 if (success) {
-//                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
-//                    finish();
-                    Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
-
-                    tv.setMovementMethod(new ScrollingMovementMethod());
-                    doSampleDatabaseStuff("onCreate", tv);
-                    setContentView(tv);
+                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                    finish();
+//                    Bundle b = intent.getBundleExtra("bundle");
+//                    Channel channel = b.getParcelable("channel");
+//                    Log.e(LOG_TAG,channel.getTitle());
+//                    Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
+//
+//                    tv.setMovementMethod(new ScrollingMovementMethod());
+//                    doSampleDatabaseStuff("onCreate", tv);
+//                    setContentView(tv);
                 }
             }
         }

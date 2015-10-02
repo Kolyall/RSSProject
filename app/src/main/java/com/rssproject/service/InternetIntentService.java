@@ -43,12 +43,17 @@ public class InternetIntentService extends IntentService {
 
 	private void sendBroadcast(
 			String action,
-			boolean success
+            boolean success
 			) {
+//        Bundle b = new Bundle();
+//        b.putParcelable("channel", channel);
+
+
 		Log.e("InternetIntentService", action);
 		Intent intent = new Intent();
 		intent.setAction(action);
-		intent.putExtra(KEY_success,success);
+//        intent.putExtra("bundle", b);
+		intent.putExtra(KEY_success, success);
 	sendBroadcast(intent);
 }
 

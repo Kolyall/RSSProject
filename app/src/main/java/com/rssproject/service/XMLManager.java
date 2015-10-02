@@ -49,6 +49,8 @@ public class XMLManager {
             if (!list.contains(item)){
                 // store it in the database
                 daoEnclosure.create(item.getEnclosure());
+                item.setCategory(item.getCategory().trim());
+                item.setPubdate(item.getPubdate().trim().replaceAll("\\s+",""));
                 daoItem.create(item);
             }
         }

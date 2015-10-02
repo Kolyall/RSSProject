@@ -12,7 +12,6 @@ import com.j256.ormlite.table.DatabaseTable;
 public  class Item {
     @DatabaseField(generatedId = true, canBeNull = false, columnName = "id")
     public int id;
-
     @DatabaseField
     private String title;
     @DatabaseField
@@ -23,6 +22,14 @@ public  class Item {
     private String description;
     @DatabaseField
     private String category;
+    public Item(){
+
+    }
+//    public Item(String title, String link, String description, String pubdate, String category, Enclosure enclosure_id) {
+//        this. title=title; this. link=link; this. description=description; this. pubdate=pubdate;
+//        this. category=category;
+//        this. enclosure_id=enclosure_id;
+//    }
 
     public String getPubdate() {
         return pubdate;
@@ -30,6 +37,14 @@ public  class Item {
 
     public String getCategory() {
         return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setPubdate(String pubdate) {
+        this.pubdate = pubdate;
     }
 
     public String getDescription() {
@@ -78,4 +93,45 @@ public  class Item {
 //        sb.append("\n").append(category.trim());
         return sb.toString();
     }
+
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        Bundle b = new Bundle();
+//        b.putString("title", title);
+//        b.putString("link", link);
+//        b.putString("description", description);
+//        b.putString("pubdate", pubdate);
+//        b.putString("category", category);
+//        b.putParcelable("enclosure_id", enclosure_id);
+//        dest.writeBundle(b);
+//    }
+//
+//    public static final Parcelable.Creator<Item> CREATOR =
+//            new Parcelable.Creator<Item>() {
+//                public Item createFromParcel(Parcel in) {
+//                    Bundle b = in.readBundle();
+//                    String title = b.getString("title");
+//                    String link = b.getString("link");
+//                    String description = b.getString("description");
+//                    String pubdate = b.getString("pubdate");
+//                    String category = b.getString("category");
+//                    Enclosure enclosure_id = b.getParcelable("enclosure_id");
+//                    Item item = new Item(title,
+//                            link,
+//                            description,
+//                            pubdate,
+//                            category,enclosure_id);
+//                    return item;
+//                }
+//
+//                @Override
+//                public Item[] newArray(int size) {
+//                    return new Item[size];
+//                }
+//            };
+//
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
 }
