@@ -1,4 +1,8 @@
-package com.rssproject;
+package com.rssproject.objects;
+
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -9,7 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by PC on 01.10.2015.
  */
 @DatabaseTable
-public  class Item {
+public  class Item implements Parcelable{
     @DatabaseField(generatedId = true, canBeNull = false, columnName = "id")
     public int id;
     @DatabaseField
@@ -25,11 +29,11 @@ public  class Item {
     public Item(){
 
     }
-//    public Item(String title, String link, String description, String pubdate, String category, Enclosure enclosure_id) {
-//        this. title=title; this. link=link; this. description=description; this. pubdate=pubdate;
-//        this. category=category;
-//        this. enclosure_id=enclosure_id;
-//    }
+    public Item(String title, String link, String description, String pubdate, String category, Enclosure enclosure_id) {
+        this. title=title; this. link=link; this. description=description; this. pubdate=pubdate;
+        this. category=category;
+        this. enclosure_id=enclosure_id;
+    }
 
     public String getPubdate() {
         return pubdate;
@@ -94,44 +98,49 @@ public  class Item {
         return sb.toString();
     }
 
-//    @Override
-//    public void writeToParcel(Parcel dest, int flags) {
-//        Bundle b = new Bundle();
-//        b.putString("title", title);
-//        b.putString("link", link);
-//        b.putString("description", description);
-//        b.putString("pubdate", pubdate);
-//        b.putString("category", category);
-//        b.putParcelable("enclosure_id", enclosure_id);
-//        dest.writeBundle(b);
-//    }
-//
-//    public static final Parcelable.Creator<Item> CREATOR =
-//            new Parcelable.Creator<Item>() {
-//                public Item createFromParcel(Parcel in) {
-//                    Bundle b = in.readBundle();
-//                    String title = b.getString("title");
-//                    String link = b.getString("link");
-//                    String description = b.getString("description");
-//                    String pubdate = b.getString("pubdate");
-//                    String category = b.getString("category");
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        Bundle b = new Bundle();
+        b.putString("title", title);
+        b.putString("link", link);
+        b.putString("description", description);
+        b.putString("pubdate", pubdate);
+        b.putString("category", category);
+        dest.writeBundle(b);
+        dest.writeParcelable(enclosure_id, flags);
+
+    }
+
+    public static final Parcelable.Creator<Item> CREATOR =
+            new Parcelable.Creator<Item>() {
+                public Item createFromParcel(Parcel in) {
+                    Bundle b = in.readBundle();
+                    String title = b.getString("title");
+                    String link = b.getString("link");
+                    String description = b.getString("description");
+                    String pubdate = b.getString("pubdate");
+                    String category = b.getString("category");
+
+                    Enclosure enclosure_id = new Enclosure();
+//                    enclosure_id = (Enclosure)in.readParcelable(Enclosure.class.getClassLoader());
+                    enclosure_id = in.readParcelable(Enclosure.class.getClassLoader());
 //                    Enclosure enclosure_id = b.getParcelable("enclosure_id");
-//                    Item item = new Item(title,
-//                            link,
-//                            description,
-//                            pubdate,
-//                            category,enclosure_id);
-//                    return item;
-//                }
-//
-//                @Override
-//                public Item[] newArray(int size) {
-//                    return new Item[size];
-//                }
-//            };
-//
-//    @Override
-//    public int describeContents() {
-//        return 0;
-//    }
+                    Item item = new Item(title,
+                            link,
+                            description,
+                            pubdate,
+                            category,enclosure_id);
+                    return item;
+                }
+
+                @Override
+                public Item[] newArray(int size) {
+                    return new Item[size];
+                }
+            };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

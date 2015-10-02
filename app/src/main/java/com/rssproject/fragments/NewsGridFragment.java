@@ -19,11 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.rssproject.Item;
 import com.rssproject.R;
-import com.rssproject.SplashActivity;
+import com.rssproject.activities.InfoActivity;
 import com.rssproject.adapters.ItemGridAdapter;
 import com.rssproject.database.DatabaseHelper;
+import com.rssproject.objects.Item;
 import com.rssproject.service.InternetIntentService;
 
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ import java.util.List;
 /**
  * Created by Unuchek on 15.09.2015.
  */
-public class EmptyFragment extends Fragment{
+public class NewsGridFragment extends Fragment{
     private String LOG_TAG=getClass().getSimpleName();
-    public static EmptyFragment newInstance() {
+    public static NewsGridFragment newInstance() {
         Bundle bundle = new Bundle();
-        EmptyFragment fragment = new EmptyFragment();
+        NewsGridFragment fragment = new NewsGridFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -85,8 +85,8 @@ public class EmptyFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (isNetworkConnected()) {
                     Intent intent = new Intent(getActivity()
-                            .getApplicationContext(), SplashActivity.class);
-                    intent.putExtra("item", position);
+                            .getApplicationContext(), InfoActivity.class);
+                    intent.putExtra("item", arrayList.get(position));
                     getActivity().startActivity(intent);
                 }
                 else

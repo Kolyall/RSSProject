@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.rssproject.fragments.EmptyFragment;
+import com.rssproject.fragments.NewsGridFragment;
 import com.rssproject.objects.DrawerItem;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class MainActivity  extends SherlockFragmentActivity  {
     private static final String FRAGMENT_TAG = "FRAGMENT_TAG";
 
     ArrayList<DrawerItem> dataList;
-    EmptyFragment fragment;
+    NewsGridFragment fragment;
     int item_position = 0;
     private LinearLayout mDrawer;
     private CustomDrawerAdapter adapter;
@@ -88,11 +88,11 @@ public class MainActivity  extends SherlockFragmentActivity  {
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            fragment = EmptyFragment.newInstance();//new SlidingTabsColorsFragment(dataList);
+            fragment = NewsGridFragment.newInstance();//new SlidingTabsColorsFragment(dataList);
             transaction.replace(R.id.sample_content_fragment, fragment,FRAGMENT_TAG);
             transaction.commit();
         }else{
-            fragment = (EmptyFragment) getSupportFragmentManager()
+            fragment = (NewsGridFragment) getSupportFragmentManager()
                     .findFragmentByTag(FRAGMENT_TAG);
         }
 

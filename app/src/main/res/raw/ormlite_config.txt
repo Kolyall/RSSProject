@@ -2,7 +2,7 @@
 # generated on 2015/10/02 01:14:05
 #
 # --table-start--
-dataClass=com.rssproject.Item
+dataClass=com.rssproject.objects.Item
 tableName=item
 # --table-fields-start--
 # --field-start--
@@ -37,7 +37,7 @@ foreignAutoCreate=true
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.rssproject.Enclosure
+dataClass=com.rssproject.objects.Enclosure
 tableName=enclosure
 # --table-fields-start--
 # --field-start--

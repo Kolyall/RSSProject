@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.rssproject.Item;
+import com.rssproject.objects.Item;
 import com.rssproject.R;
 
 import java.text.ParseException;

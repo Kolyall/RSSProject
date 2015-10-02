@@ -9,8 +9,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.rssproject.Enclosure;
-import com.rssproject.Item;
+import com.rssproject.objects.Enclosure;
+import com.rssproject.objects.Item;
 import com.rssproject.R;
 
 import java.sql.SQLException;

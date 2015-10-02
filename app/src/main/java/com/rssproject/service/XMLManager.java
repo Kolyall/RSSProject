@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.rssproject.Channel;
-import com.rssproject.Enclosure;
-import com.rssproject.Item;
+import com.rssproject.objects.Channel;
+import com.rssproject.objects.Enclosure;
+import com.rssproject.objects.Item;
 import com.rssproject.database.DatabaseHelper;
 
 import org.jsoup.Jsoup;
@@ -50,7 +50,7 @@ public class XMLManager {
                 // store it in the database
                 daoEnclosure.create(item.getEnclosure());
                 item.setCategory(item.getCategory().trim());
-                item.setPubdate(item.getPubdate().trim().replaceAll("\\s+",""));
+                item.setPubdate(item.getPubdate().trim().replaceAll("\\s+", ""));
                 daoItem.create(item);
             }
         }

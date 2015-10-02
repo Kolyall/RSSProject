@@ -1,8 +1,8 @@
 package com.rssproject.database;
 
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
-import com.rssproject.Enclosure;
-import com.rssproject.Item;
+import com.rssproject.objects.Enclosure;
+import com.rssproject.objects.Item;
 
 /**
  * Created by Unuchek on 02.10.2015.

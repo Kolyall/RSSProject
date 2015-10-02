@@ -1,4 +1,4 @@
-package com.rssproject;
+package com.rssproject.objects;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;

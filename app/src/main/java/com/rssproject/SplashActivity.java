@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.rssproject.database.DatabaseHelper;
+import com.rssproject.objects.Enclosure;
+import com.rssproject.objects.Item;
 import com.rssproject.service.InternetIntentService;
 
 import java.util.List;
