@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -21,6 +23,11 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.rssproject.R;
 import com.rssproject.objects.Item;
+
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.FeedbackManager;
+import net.hockeyapp.android.Tracking;
+import net.hockeyapp.android.UpdateManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,13 +46,26 @@ public class InfoActivity extends SherlockActivity {
     private Button btn_open_web;
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.menu_info, menu);
+        return true;
+    }
 
+    public void showFeedbackActivity() {
+        FeedbackManager.register(this, getString(R.string.HOT_KEY_ID), null);
+        FeedbackManager.showFeedbackActivity(this);
+    }
 
     public boolean onMenuItemSelected(int featureId, MenuItem item)
     {
         switch (item.getItemId()) {
             case  android.R.id.home:
                 finish();
+                break;
+            case R.id.menu_feedback:
+                showFeedbackActivity();
                 break;
         }
         return true;
@@ -142,5 +162,30 @@ public class InfoActivity extends SherlockActivity {
             }
         });
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Tracking.startUsage(this);
+        checkForCrashes();
+        checkForUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        Tracking.stopUsage(this);
+        super.onPause();
+    }
+
+
+    private void checkForCrashes() {
+        CrashManager.register(this, getString(R.string.HOT_KEY_ID));
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this, getString(R.string.HOT_KEY_ID));
     }
 }

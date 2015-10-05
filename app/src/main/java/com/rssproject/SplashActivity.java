@@ -19,6 +19,10 @@ import com.rssproject.objects.Enclosure;
 import com.rssproject.objects.Item;
 import com.rssproject.service.InternetIntentService;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.Tracking;
+import net.hockeyapp.android.UpdateManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +64,29 @@ public class SplashActivity extends SherlockActivity {
     };
     TextView tv;
     private Handler handler;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkForCrashes();
+        checkForUpdates();
+        Tracking.startUsage(this);
+    }
+
+    @Override
+    protected void onPause() {
+        Tracking.stopUsage(this);
+        super.onPause();
+    }
+
+    private void checkForCrashes() {
+        CrashManager.register(this, getString(R.string.HOT_KEY_ID));
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this, getString(R.string.HOT_KEY_ID));
+    }
 
     class MyRun implements Runnable {
         Context applicationContext;
@@ -180,6 +207,7 @@ public class SplashActivity extends SherlockActivity {
         intentService.putExtra(InternetIntentService.EXTRA_EVENT_NAME, InternetIntentService.EVENT_LOAD_LIST);
         startService(intentService);
     }
+
 
 
     boolean isNetworkConnected() {

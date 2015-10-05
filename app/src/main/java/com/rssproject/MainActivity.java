@@ -29,6 +29,10 @@ import com.rssproject.fragments.NewsGridFragment;
 import com.rssproject.objects.DrawerItem;
 import com.rssproject.service.InternetIntentService;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.Tracking;
+import net.hockeyapp.android.UpdateManager;
+
 import java.util.ArrayList;
 
 public class MainActivity  extends SherlockFragmentActivity  {
@@ -68,6 +72,23 @@ public class MainActivity  extends SherlockFragmentActivity  {
         if (pDialog!=null)
             if (pDialog.isShowing())
                 pDialog.dismiss();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Tracking.startUsage(this);
+        checkForCrashes();
+        checkForUpdates();
+    }
+
+    private void checkForCrashes() {
+        CrashManager.register(this, getString(R.string.HOT_KEY_ID));
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this, getString(R.string.HOT_KEY_ID));
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -296,6 +317,7 @@ public class MainActivity  extends SherlockFragmentActivity  {
 
     @Override
     protected void onPause() {
+        Tracking.stopUsage(this);
         super.onPause();
         if (back_toast != null && back_toast.getView().getWindowVisibility() == View.VISIBLE)
             back_toast.cancel();
