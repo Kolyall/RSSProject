@@ -1,6 +1,10 @@
 package com.rssproject;
 
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,9 +22,12 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.rssproject.fragments.NewsGridFragment;
 import com.rssproject.objects.DrawerItem;
+import com.rssproject.service.InternetIntentService;
 
 import java.util.ArrayList;
 
@@ -36,29 +43,76 @@ public class MainActivity  extends SherlockFragmentActivity  {
     private CustomDrawerAdapter adapter;
     ActionBar actionBar;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    public void reloadListFromRSS() {
+        Intent intentService = new Intent(getApplicationContext(), InternetIntentService.class);
+        intentService.putExtra(InternetIntentService.EXTRA_EVENT_NAME, InternetIntentService.EVENT_RELOAD_LIST);
+        startService(intentService);
+    }
+
+    private ProgressDialog pDialog;
+    private void showLoadingDialog() {
+        if(pDialog==null)
+            pDialog = new ProgressDialog(MainActivity.this);
+        pDialog.setCancelable(false);
+        pDialog.setMessage(getString(R.string.loading));
+        pDialog.show();
+    }
+    private void dismissProgressDialog() {
+        if (pDialog!=null)
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
-        // ActionBarDrawerToggle will take care of this.
-//        if (mDrawerToggle.onOptionsItemSelected((android.view.MenuItem) item)) {
-//            return true;
-//        }
-//        else
-        if (item.getItemId() == android.R.id.home) {
-            mDrawerToggle.setDrawerIndicatorEnabled(true);
-            if (mDrawerLayout.isDrawerOpen(mDrawer))
-                mDrawerLayout.closeDrawer(mDrawer);
-            else
-                mDrawerLayout.openDrawer(mDrawer);
-            return true;
+        switch (item.getItemId())
+        {   case (android.R.id.home):{
+                mDrawerToggle.setDrawerIndicatorEnabled(true);
+                if (mDrawerLayout.isDrawerOpen(mDrawer))
+                    mDrawerLayout.closeDrawer(mDrawer);
+                else
+                    mDrawerLayout.openDrawer(mDrawer);
+                return true;
+            }
+            case (R.id.menu_sync):{
+                if (!isNetworkConnected()){
+                    Toast.makeText(getApplicationContext(),"Нет интернет соединения!",Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                showLoadingDialog();
+                reloadListFromRSS();
+                return true;
+            }
         }
         return true;
+    }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().contains(InternetIntentService.ACTION_LIST_RELOADED)) {
+                dismissProgressDialog();
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(InternetIntentService.ACTION_LIST_RELOADED);
+        registerReceiver(receiver, intentFilter);
 
         actionBar = getSupportActionBar();
         actionBar.setIcon(android.R.color.transparent);
@@ -116,15 +170,7 @@ public class MainActivity  extends SherlockFragmentActivity  {
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         //-------left menu
 
-        if (savedInstanceState == null) {
-            if (!isNetworkConnected()) {
-                Toast.makeText(getApplicationContext(),"No internet",Toast.LENGTH_LONG).show();
-            }
-            else {
-//                SelectItem(0);
-            }
-        }
-        else{
+        if (savedInstanceState != null) {
             item_position = savedInstanceState.getInt("item_position", 0);
             setItemSelected(item_position);
         }
@@ -197,15 +243,14 @@ public class MainActivity  extends SherlockFragmentActivity  {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (!isNetworkConnected()) {
-                setItemSelected(item_position);
-                setTitle(dataList.get(item_position).getItemName());
-                Toast.makeText(getApplicationContext(),"No internet",Toast.LENGTH_LONG).show();
-            }
-            else {
+//            if (!isNetworkConnected()) {
+//                setItemSelected(item_position);
+//                setTitle(dataList.get(item_position).getItemName());
+//                Toast.makeText(getApplicationContext(),"No internet",Toast.LENGTH_LONG).show();
+//            }
+//            else {
                 SelectItem(position);
-            }
-
+//            }
         }
     }
 

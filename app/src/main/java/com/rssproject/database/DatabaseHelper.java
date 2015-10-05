@@ -23,7 +23,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application -- change to something appropriate for your app
     private static final String DATABASE_NAME = "rss_database.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     // the DAO object we use to access the SimpleData table
     private Dao<Item, Integer> simpleDao = null;
     private RuntimeExceptionDao<Item, Integer> simpleRuntimeDao = null;
@@ -68,7 +68,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
      * value.
      */
-    public Dao<Item, Integer> getDao() throws SQLException {
+    public Dao<Item, Integer> getItemDao() throws SQLException {
         if (simpleDao == null) {
             simpleDao = getDao(Item.class);
         }

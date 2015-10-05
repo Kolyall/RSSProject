@@ -2,7 +2,8 @@ package com.rssproject.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,8 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.rssproject.objects.Item;
 import com.rssproject.R;
+import com.rssproject.objects.Item;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,14 +45,12 @@ public class ItemGridAdapter extends BaseAdapter {
         inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imageLoader = ImageLoader.getInstance();
         options = new DisplayImageOptions.Builder()
-        		.cacheInMemory(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-				.showImageOnFail(android.R.color.transparent)
-				.cacheOnDisk(true)
-				.displayer(new FadeInBitmapDisplayer(1500))
-				.resetViewBeforeLoading(true)
-				.imageScaleType(ImageScaleType.EXACTLY)// default
-				.build();
+//                        .showImageOnFail(mContext.getResources().getDrawable(R.drawable.no_image))
+                        .cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565)
+                        .showImageOnFail(android.R.color.transparent).cacheOnDisk(true)
+                        .displayer(new FadeInBitmapDisplayer(1500))
+                        .resetViewBeforeLoading(true).imageScaleType(ImageScaleType.EXACTLY)// default
+                        .build();
     }
 
 	public int getCount() {
@@ -106,10 +105,10 @@ public class ItemGridAdapter extends BaseAdapter {
         }
 
 
-        int MAX = 60;
-        int maxLength = (item_title.length() < MAX)?item_title.length():MAX;
-        String dots = (item_title.length() < MAX)?"":"...";
-        item_title = item_title.substring(0, maxLength)+dots;
+//        int MAX = 60;
+//        int maxLength = (item_title.length() < MAX)?item_title.length():MAX;
+//        String dots = (item_title.length() < MAX)?"":"...";
+//        item_title = item_title.substring(0, maxLength)+dots;
 
         viewHolder.title.setText(item_title);
         viewHolder.date.setText(newDateStr);
@@ -127,12 +126,11 @@ public class ItemGridAdapter extends BaseAdapter {
 
 						@Override
 						public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-							            	viewHolder.progressBar1.setVisibility(View.GONE);
-							            	viewHolder.thumb_image.invalidate();
-							            	viewHolder.thumb_image.setVisibility(View.VISIBLE);
-							            	viewHolder.thumb_image.setImageBitmap(BitmapFactory
-                                                    .decodeResource(mContext
-                                                            .getResources(), android.R.drawable.ic_dialog_alert));
+                            viewHolder.progressBar1.setVisibility(View.GONE);
+                            viewHolder.thumb_image.invalidate();
+                            viewHolder.thumb_image.setVisibility(View.VISIBLE);
+//                            viewHolder.thumb_image.setImageBitmap(mContext.getResources().getDrawable(R.drawable.no_image));
+                            viewHolder.thumb_image.setImageResource(R.drawable.no_image);
 						}
 
 						@Override
@@ -149,6 +147,35 @@ public class ItemGridAdapter extends BaseAdapter {
 					});
 
         return convertView;
+    }
+
+    boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) mContext
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni == null) {
+            try {
+                //For 3G check
+                boolean is3g = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+                        .isConnectedOrConnecting();
+                //For WiFi Check
+                boolean isWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                        .isConnectedOrConnecting();
+
+
+                if (!is3g && !isWifi) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+
+            } catch (Exception er) {
+                return false;
+            }
+        }
+        else
+            return true;
     }
     
 

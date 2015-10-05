@@ -11,6 +11,7 @@
     tools:context=".SplashActivity">
 
     <TextView
+        android:id="@+id/hello"
         android:text="Приветствиe!"
         android:textSize="20dp"
         android:layout_width="wrap_content"

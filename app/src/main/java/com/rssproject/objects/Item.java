@@ -9,6 +9,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.Date;
+
 /**
  * Created by PC on 01.10.2015.
  */
@@ -23,12 +25,23 @@ public  class Item implements Parcelable{
     @DatabaseField
     private String pubdate;
     @DatabaseField
+    private Date d_date;
+    @DatabaseField
     private String description;
     @DatabaseField
     private String category;
     public Item(){
 
     }
+
+    public void setD_date(Date d_date) {
+        this.d_date = d_date;
+    }
+
+    public Date getD_date() {
+        return d_date;
+    }
+
     public Item(String title, String link, String description, String pubdate, String category, Enclosure enclosure_id) {
         this. title=title; this. link=link; this. description=description; this. pubdate=pubdate;
         this. category=category;

@@ -2,7 +2,6 @@ package com.rssproject.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -126,9 +125,8 @@ public class InfoActivity extends SherlockActivity {
                 progressBar1.setVisibility(View.GONE);
                 thumb_image.invalidate();
                 thumb_image.setVisibility(View.VISIBLE);
-                thumb_image.setImageBitmap(BitmapFactory
-                        .decodeResource(getApplicationContext()
-                                .getResources(), android.R.drawable.ic_dialog_alert));
+                //                            viewHolder.thumb_image.setImageBitmap(mContext.getResources().getDrawable(R.drawable.no_image));
+                thumb_image.setImageResource(R.drawable.no_image);
             }
 
             @Override

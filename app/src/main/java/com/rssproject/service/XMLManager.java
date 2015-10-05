@@ -21,7 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class XMLManager {
     private final String LOG_TAG = getClass().getSimpleName();
@@ -54,6 +58,18 @@ public class XMLManager {
                 daoEnclosure.create(item.getEnclosure());
                 item.setCategory(item.getCategory().trim());
                 item.setPubdate(item.getPubdate().trim().replaceAll("\\s+", ""));
+
+                String item_date = item.getPubdate();
+                SimpleDateFormat curFormater = new SimpleDateFormat("EEE,ddMMMyyyyHH:mm:ssZ", Locale.ENGLISH);
+
+                Date dateObj = null;
+                try {
+                    dateObj = curFormater.parse(item_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                item.setD_date(dateObj);
                 daoItem.create(item);
             }
         }

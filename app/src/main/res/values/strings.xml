@@ -6,4 +6,5 @@
     <string name="drawer_open">Opened</string>
     <string name="drawer_close">Close</string>
     <string name="exit">Click again to Exit</string>
+    <string name="loading">Загрузка...</string>
 </resources>

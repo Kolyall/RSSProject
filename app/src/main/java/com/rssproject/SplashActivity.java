@@ -4,10 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -43,6 +44,16 @@ public class SplashActivity extends SherlockActivity {
 //                    tv.setMovementMethod(new ScrollingMovementMethod());
 //                    doSampleDatabaseStuff("onCreate", tv);
 //                    setContentView(tv);
+                }
+                else{
+                    tv.setText(tv.getText().toString()+"\nНет интернет соединения.\nЗагрузка из Базы данных...");
+                    //Back timer
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            sendBroadcast(InternetIntentService.ACTION_LIST_LOADED, true);
+                        }
+                    }, 2000);
                 }
             }
         }
@@ -89,6 +100,18 @@ public class SplashActivity extends SherlockActivity {
         }
     }
 
+    private void sendBroadcast(
+            String action,
+            boolean success
+    ) {
+        Log.e("InternetIntentService", action);
+        Intent intent = new Intent();
+        intent.setAction(action);
+        //        intent.putExtra("bundle", b);
+        intent.putExtra(InternetIntentService.KEY_success, success);
+        sendBroadcast(intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +121,20 @@ public class SplashActivity extends SherlockActivity {
         registerReceiver(receiver, filter);
 
         setContentView(R.layout.activity_splash);
+        tv = (TextView)findViewById(R.id.hello);
 
-        loadListFromRSS();
-         tv = new TextView(this);
+        if (isNetworkConnected()){
+            loadListFromRSS();
+        }else{
+            tv.setText(tv.getText().toString()+"\nНет интернет соединения.\nЗагрузка из Базы данных...");
+            //Back timer
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    sendBroadcast(InternetIntentService.ACTION_LIST_LOADED, true);
+                }
+            }, 2000);
+        }
 
         handler = new Handler(getBaseContext().getMainLooper());
     }
@@ -146,4 +180,35 @@ public class SplashActivity extends SherlockActivity {
         intentService.putExtra(InternetIntentService.EXTRA_EVENT_NAME, InternetIntentService.EVENT_LOAD_LIST);
         startService(intentService);
     }
+
+
+    boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni == null) {
+            try {
+                //For 3G check
+                boolean is3g = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+                        .isConnectedOrConnecting();
+                //For WiFi Check
+                boolean isWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                        .isConnectedOrConnecting();
+
+
+                if (!is3g && !isWifi) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+
+            } catch (Exception er) {
+                return false;
+            }
+        }
+        else
+            return true;
+    }
+
 }

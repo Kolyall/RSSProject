@@ -1,5 +1,5 @@
 #
-# generated on 2015/10/02 01:14:05
+# generated on 2015/10/05 12:19:32
 #
 # --table-start--
 dataClass=com.rssproject.objects.Item
@@ -19,6 +19,9 @@ fieldName=link
 # --field-end--
 # --field-start--
 fieldName=pubdate
+# --field-end--
+# --field-start--
+fieldName=d_date
 # --field-end--
 # --field-start--
 fieldName=description

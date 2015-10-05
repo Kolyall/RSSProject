@@ -16,9 +16,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.rssproject.R;
 import com.rssproject.activities.InfoActivity;
 import com.rssproject.adapters.ItemGridAdapter;
@@ -27,6 +27,7 @@ import com.rssproject.objects.DrawerItem;
 import com.rssproject.objects.Item;
 import com.rssproject.service.InternetIntentService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,6 @@ public class NewsGridFragment extends Fragment{
         View v = inflater.inflate(R.layout.fragment_empty, null);//в этот лайаут добавляй свои вьюхи
         return v;
     }
-
     private GridView gridView;
     ArrayList<Item> arrayList = new ArrayList<Item>();
     private ItemGridAdapter adapter;
@@ -57,8 +57,8 @@ public class NewsGridFragment extends Fragment{
     }
     BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().contains(InternetIntentService.ACTION_LIST_LOADED)) {
-
+            if (intent.getAction().contains(InternetIntentService.ACTION_LIST_RELOADED)) {
+                selectItem(startId);
             }
         }
 
@@ -66,10 +66,12 @@ public class NewsGridFragment extends Fragment{
     };
 
     public void onResume() {
+        intentFilter.addAction(InternetIntentService.ACTION_LIST_RELOADED);
         getActivity().registerReceiver(receiver, intentFilter);
         super.onResume();
         adapter.notifyDataSetChanged();
     }
+
 
 
     IntentFilter intentFilter = new IntentFilter();
@@ -84,15 +86,10 @@ public class NewsGridFragment extends Fragment{
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (isNetworkConnected()) {
                     Intent intent = new Intent(getActivity()
                             .getApplicationContext(), InfoActivity.class);
                     intent.putExtra("item", arrayList.get(position));
                     getActivity().startActivity(intent);
-                }
-                else
-                    Toast.makeText(getActivity()
-                            .getApplicationContext(), "No internet", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -112,7 +109,16 @@ public class NewsGridFragment extends Fragment{
             this.applicationContext = applicationContext;
         }
         public void run() {
-            List<Item>  list = getListFromDB(applicationContext,startId);
+            List<Item>  list = null;
+            try {
+                list = retrieveByDate(applicationContext, startId);
+                if (startId!=null)
+                    Log.e("list","list retrieved:"+startId.getItemName());
+                else
+                    Log.e("list","list retrieved:"+null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             addToUIListFrom(list);
             handler.post(new Runnable() {
                 @Override
@@ -125,9 +131,9 @@ public class NewsGridFragment extends Fragment{
     }
 
 
-
+    DrawerItem startId;
     public void selectItem(DrawerItem item_position) {
-        DrawerItem startId=item_position;
+        startId=item_position;
         MyRun mr = new MyRun(getActivity().getApplicationContext(),startId);
         new Thread(mr).start();
     }
@@ -142,12 +148,25 @@ public class NewsGridFragment extends Fragment{
 
     }
 
+    public List<Item> retrieveByDate(Context applicationContext,DrawerItem startId)throws SQLException {
+        QueryBuilder<Item,Integer> queryBuilder =  (new DatabaseHelper(applicationContext)).getItemDao().queryBuilder();
+        List<Item> list;
+        if (startId==null||startId.getItemName().equals("Все новости"))
+            queryBuilder.where().isNotNull("title");
+        else{
+            queryBuilder.where().eq("category", startId.getItemName());
+        }
+        queryBuilder.orderBy("d_date", false);
+
+        list = queryBuilder.query();
+        return list;
+    }
+
     private void addToUIListFrom(List<Item> items) {
         arrayList.removeAll(arrayList);
         for (Item item:items){
             if (!arrayList.contains(item))
             arrayList.add(item);
-            Log.e("item_title", item.getCategory());
         }
     }
 
